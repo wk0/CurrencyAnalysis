@@ -1,7 +1,7 @@
 # CurrencyAnalysis
 Datamining, CS378 Emory University
 
-*I'm using Python 2.7*
+I'm using **Python 2.7**
 
 to install dependencies (may require sudo):
 $pip install -r requirements.txt
