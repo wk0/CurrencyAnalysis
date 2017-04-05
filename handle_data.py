@@ -81,12 +81,15 @@ def test():
 def make_three_datasets():
 	dollar_data = read_input_file(dollar_file_name)
 	usd = Dataset(dollar_data)
+	usd.process_lists()
 
 	bitcoin_data = read_input_file(bitcoin_file_name)
 	bitcoin = Dataset(bitcoin_data)
+	bitcoin.process_lists()
 
 	gold_data = read_input_file(gold_file_name)
 	gold = Dataset(gold_data)
+	gold.process_lists()
 
 	return usd, bitcoin, gold
 
