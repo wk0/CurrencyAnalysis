@@ -50,16 +50,31 @@ def main():
 	print gold_data[1]
 	print ''
 
-	usd = DollarDataset(usd_data)
+	# -----
+
+	usd = Dataset(usd_data)
 	usd.process_lists()
 
+	print 'USD Object Access'
 	print usd.access_by_date['2017-03-23']
+	print usd.access_by_date['2017-03-22']
+	print ''
 
-	bitcoin = BitcoinDataset(bitcoin_data)
+	bitcoin = Dataset(bitcoin_data)
 	bitcoin.process_lists()
 
+	print 'Bitcoin Object Access'
 	print bitcoin.access_by_date['2017-03-23']
+	print bitcoin.access_by_date['2017-03-22']
+	print ''
 
+	gold = Dataset(gold_data)
+	gold.process_lists()
+
+	print 'Gold Object Access'
+	print gold.access_by_date['2017-03-23']
+	print gold.access_by_date['2017-03-22']
+	print ''
 
 def read_input_file(file):
 	lines = open(file).read().split('\n')
@@ -75,46 +90,33 @@ def read_input_file(file):
 	return lists
 
 
-class DollarDataset:
+
+
+class Dataset:
+	# USD
 	# ['Date', 'Value']
 	# ['2017-03-24', '124.1911']
 
-	def __init__(self, rows):
-		self.rows = rows
+	# Gold
+	# ['Date', 'USD (AM)', 'USD (PM)', 'GBP (AM)', 'GBP (PM)', 'EURO (AM)', 'EURO (PM)']
+	# ['2017-03-24', '1244.0', '1247.5', '996.2', '999.62', '1150.82', '1155.31']
 
-	def process_lists(self):
-		by_date = {}
-
-		for row in self.rows:
-			r = {}
-			r['Date'] = row[0]
-			r['Value'] = row[1]
-
-			by_date[row[0]] = r
-
-		self.access_by_date = by_date
-
-
-class BitcoinDataset:
+	# Bitcoin
 	# ['Date', 'Open', 'High', 'Low', 'Close', 'Volume (BTC)', 'Volume (Currency)', 'Weighted Price']
 	# ['2017-03-24', '1030.84', '1032.0', '920.0', '929.06', '16072.4170833', '15697051.6813', '976.645367026']
 
 	def __init__(self, rows):
 		self.rows = rows
+		self.labels = rows[0]
 
 	def process_lists(self):
 		by_date = {}
 
 		for row in self.rows:
 			r = {}
-			r['Date'] = row[0]
-			r['Open'] = row[1]
-			r['High'] = row[2]
-			r['Low'] = row[3]
-			r['Close'] = row[4]
-			r['Volume (BTC)'] = row[5]
-			r['Volume (Currency)'] = row[6]
-			r['Weighted Price'] = row[7]
+			# Uses the index labels to create the dictionary
+			for index in range(0,len(self.labels)):
+				r[self.labels[index]] = row[index]
 
 			by_date[row[0]] = r
 
@@ -122,12 +124,6 @@ class BitcoinDataset:
 
 
 
-class GoldDataset:
-	# ['Date', 'USD (AM)', 'USD (PM)', 'GBP (AM)', 'GBP (PM)', 'EURO (AM)', 'EURO (PM)']
-	# ['2017-03-24', '1244.0', '1247.5', '996.2', '999.62', '1150.82', '1155.31']
-
-	def __init__(self, rows):
-		self.rows = rows
 
 if __name__ == "__main__":
 	main()
