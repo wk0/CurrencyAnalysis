@@ -55,7 +55,6 @@ def test():
 	# -----
 
 	usd = Dataset(usd_data)
-	usd.process_lists()
 
 	print 'USD Object Access'
 	print usd.access_by_date['2017-03-23']
@@ -63,7 +62,6 @@ def test():
 	print ''
 
 	bitcoin = Dataset(bitcoin_data)
-	bitcoin.process_lists()
 
 	print 'Bitcoin Object Access'
 	print bitcoin.access_by_date['2017-03-23']
@@ -71,7 +69,6 @@ def test():
 	print ''
 
 	gold = Dataset(gold_data)
-	gold.process_lists()
 
 	print 'Gold Object Access'
 	print gold.access_by_date['2017-03-23']
@@ -80,16 +77,13 @@ def test():
 
 def make_three_datasets():
 	dollar_data = read_input_file(dollar_file_name)
-	usd = Dataset(dollar_data)
-	usd.process_lists()
+	usd = Dataset(dollar_data, 'usd')
 
 	bitcoin_data = read_input_file(bitcoin_file_name)
-	bitcoin = Dataset(bitcoin_data)
-	bitcoin.process_lists()
+	bitcoin = Dataset(bitcoin_data, 'bitcoin')
 
 	gold_data = read_input_file(gold_file_name)
-	gold = Dataset(gold_data)
-	gold.process_lists()
+	gold = Dataset(gold_data, 'gold')
 
 	return usd, bitcoin, gold
 
@@ -121,9 +115,13 @@ class Dataset:
 	# ['Date', 'Open', 'High', 'Low', 'Close', 'Volume (BTC)', 'Volume (Currency)', 'Weighted Price']
 	# ['2017-03-24', '1030.84', '1032.0', '920.0', '929.06', '16072.4170833', '15697051.6813', '976.645367026']
 
-	def __init__(self, rows):
+	def __init__(self, rows, name):
+		self.name = name
 		self.rows = rows
 		self.labels = rows[0]
+		self.access_by_date = self.process_lists()
+		self.date_list = self.get_list_of_dates()
+		self.date_set = set(self.date_list)
 
 	def process_lists(self):
 		by_date = {}
@@ -136,9 +134,17 @@ class Dataset:
 
 			by_date[row[0]] = r
 
-		self.access_by_date = by_date
+		return by_date
 
+	def get_list_of_dates(self):
+		dates = []
 
+		dates = self.access_by_date.keys()
+
+		if len(dates) != len(set(dates)):
+			raise ValueError('Dates not unique within dataset')
+
+		return dates
 
 
 if __name__ == "__main__":

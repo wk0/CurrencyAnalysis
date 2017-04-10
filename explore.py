@@ -9,6 +9,15 @@ def main():
 	end_date = datetime.datetime(year=2017, month=3, day=24)
 
 	date_range = all_dates(start_date, end_date)
+
+	print_date_summary(usd, bitcoin, gold, date_range, start_date, end_date)
+
+	#print usd.date_set
+
+
+
+
+def print_date_summary(usd, bitcoin, gold, date_range, start_date, end_date):
 	print date_range, 'days between', start_date.date(), 'and', end_date.date()
 	print ''
 
@@ -27,9 +36,21 @@ def main():
 	gold_valid_dates = date_iterate_dataset(start_date, end_date, gold)
 	print ''
 
-	# Need to figure out what dates are not the same
-	if all(x in usd_valid_dates for x in gold_valid_dates):
-		print 'All dates between USD and Gold are equal'
+	get_unique_dates(usd, gold)
+	get_unique_dates(usd, bitcoin)
+	get_unique_dates(gold, bitcoin)
+
+def get_unique_dates(one, two):
+	one_set = one.date_set
+	two_set = two.date_set
+
+	missing_one = two_set - one_set
+	missing_two = one_set - two_set
+
+	dates_not_in_both = list(missing_one) + list(missing_two)
+	print len(dates_not_in_both),'dates not in both', one.name, 'and', two.name
+
+
 
 def date_iterate_dataset(start_date, end_date, dataset):
 	valid_count = 0
