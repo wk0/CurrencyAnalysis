@@ -87,6 +87,7 @@ def make_three_datasets(all_possible_dates):
 
 	gold_data = read_input_file(gold_file_name)
 	gold = Dataset(gold_data, 'gold')
+	gold = clean_gold(gold)
 
 	set_of_all_three_dates = get_list_of_common_dates(all_possible_dates, usd, bitcoin, gold)
 	all_three_list = list(set_of_all_three_dates)
@@ -104,25 +105,34 @@ def make_three_datasets(all_possible_dates):
 	pop_unique_dates(gold, all_three_list)
 
 
-	usd.access_by_date = usd.process_lists()
-	usd.date_list = usd.get_list_of_dates()
-	usd.date_set = set(usd.date_list)
+	usd = as_floats(usd)
+	bitcoin = as_floats(bitcoin)
+	gold = as_floats(gold)
 
-	bitcoin.access_by_date = bitcoin.process_lists()
-	bitcoin.date_list = bitcoin.get_list_of_dates()
-	bitcoin.date_set = set(bitcoin.date_list)
-
-	gold.access_by_date = gold.process_lists()
-	gold.date_list = gold.get_list_of_dates()
-	gold.date_set = set(gold.date_list)
-
-
+	usd.refresh()
+	bitcoin.refresh()
+	gold.refresh()
 
 
 	# must be the same number of dates for each
 	assert(len(usd.rows) == len(bitcoin.rows) == len(gold.rows) == len(set_of_all_three_dates))
 
 	return usd, bitcoin, gold
+
+def as_floats(dataset):
+	for row in dataset.rows:
+		#print row
+		i = 0
+		for item in row:
+			if i == 0:
+				pass
+			else:
+				if row[i] == '':
+					row[i] = float(-1)
+				row[i] = float(row[i])
+			i += 1
+
+	return dataset
 
 
 def pop_unique_dates(dataset, all_three_list):
@@ -162,11 +172,28 @@ def clean_bitcoin(bitcoin):
 			#print 'popped 0'
 		index += 1
 
-	bitcoin.access_by_date = bitcoin.process_lists()
-	bitcoin.date_list = bitcoin.get_list_of_dates()
-	bitcoin.date_set = set(bitcoin.date_list)
+	bitcoin.refresh()
 
 	return bitcoin
+
+
+def clean_gold(gold):
+	index = 0
+	for row in gold.rows:
+		#print row
+		for item in row:
+
+			if item == '':
+				#print 'popped'
+				gold.rows.pop(index)
+				break
+		index += 1
+
+	gold.refresh()
+
+	return gold
+
+
 
 
 def get_list_of_common_dates(list_of_all_possible_dates, usd, bitcoin, gold):
@@ -214,6 +241,11 @@ class Dataset:
 		self.name = name
 		self.rows = rows
 		self.labels = rows[0]
+		self.access_by_date = self.process_lists()
+		self.date_list = self.get_list_of_dates()
+		self.date_set = set(self.date_list)
+
+	def refresh(self):
 		self.access_by_date = self.process_lists()
 		self.date_list = self.get_list_of_dates()
 		self.date_set = set(self.date_list)
