@@ -3,18 +3,29 @@ import datetime
 
 
 def main():
-	usd, bitcoin, gold = make_three_datasets()
-
 	start_date = datetime.datetime(year=2011 ,month=9, day=13)
 	end_date = datetime.datetime(year=2017, month=3, day=24)
 
-	date_range = all_dates(start_date, end_date)
+	list_of_all_possible_dates = all_dates(start_date, end_date)
+	usd, bitcoin, gold = make_three_datasets(list_of_all_possible_dates)
 
-	print_date_summary(usd, bitcoin, gold, date_range, start_date, end_date)
-
-	#print usd.date_set
+	#print_date_summary(usd, bitcoin, gold, len(list_of_all_possible_dates), start_date, end_date)
 
 
+	common_dates = get_list_of_common_dates(list_of_all_possible_dates, usd, bitcoin, gold)
+
+	#print len(list_of_all_possible_dates)
+
+
+def get_list_of_common_dates(list_of_all_possible_dates, usd, bitcoin, gold):
+	set_of_all_possible_dates = set(list_of_all_possible_dates)
+
+	set_of_all_three_dates = set_of_all_possible_dates.intersection(usd.date_set)
+	set_of_all_three_dates = set_of_all_three_dates.intersection(bitcoin.date_set)
+	set_of_all_three_dates = set_of_all_three_dates.intersection(gold.date_set)
+
+	#print len(set_of_all_three_dates), 'dates in all three'
+	return set_of_all_three_dates
 
 
 def print_date_summary(usd, bitcoin, gold, date_range, start_date, end_date):
@@ -48,6 +59,7 @@ def get_unique_dates(one, two):
 	missing_two = one_set - two_set
 
 	dates_not_in_both = list(missing_one) + list(missing_two)
+	#print dates_not_in_both
 	print len(dates_not_in_both),'dates not in both', one.name, 'and', two.name
 
 
@@ -80,16 +92,19 @@ def date_iterate_dataset(start_date, end_date, dataset):
 
 
 def all_dates(start_date, end_date):
-	count = 0
 
-	d = start_date
+	list_of_all_possible_dates = []
+	current_date = start_date
 	delta = datetime.timedelta(days=1)
-	while d <= end_date:
-		d += delta
-		count += 1
 
-	return count
+	while current_date < end_date:
+		current_only_date = current_date.date()
+		date_string = current_only_date.strftime('%Y-%m-%d')
+		list_of_all_possible_dates.append(date_string)
 
+		current_date += delta
+
+	return list_of_all_possible_dates
 
 
 if __name__ == "__main__":

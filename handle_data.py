@@ -1,5 +1,6 @@
 import quandl
 import csv
+import datetime
 
 """
 	Imports the data from the quandl API, though it may
@@ -75,17 +76,67 @@ def test():
 	print gold.access_by_date['2017-03-22']
 	print ''
 
-def make_three_datasets():
+def make_three_datasets(all_possible_dates):
 	dollar_data = read_input_file(dollar_file_name)
 	usd = Dataset(dollar_data, 'usd')
 
 	bitcoin_data = read_input_file(bitcoin_file_name)
 	bitcoin = Dataset(bitcoin_data, 'bitcoin')
+	bitcoin = clean_bitcoin(bitcoin)
+
 
 	gold_data = read_input_file(gold_file_name)
 	gold = Dataset(gold_data, 'gold')
 
+	set_of_all_three_dates = get_list_of_common_dates(all_possible_dates, usd, bitcoin, gold)
+	all_three_list = list(set_of_all_three_dates)
+
+
+
+	pop_unique_dates(usd, all_three_list)
+	pop_unique_dates(usd, all_three_list)
+
+	pop_unique_dates(bitcoin, all_three_list)
+	pop_unique_dates(bitcoin, all_three_list)
+	pop_unique_dates(bitcoin, all_three_list)
+
+	pop_unique_dates(gold, all_three_list)
+	pop_unique_dates(gold, all_three_list)
+
+
+	usd.access_by_date = usd.process_lists()
+	usd.date_list = usd.get_list_of_dates()
+	usd.date_set = set(usd.date_list)
+
+	bitcoin.access_by_date = bitcoin.process_lists()
+	bitcoin.date_list = bitcoin.get_list_of_dates()
+	bitcoin.date_set = set(bitcoin.date_list)
+
+	gold.access_by_date = gold.process_lists()
+	gold.date_list = gold.get_list_of_dates()
+	gold.date_set = set(gold.date_list)
+
+
+
+
+	# must be the same number of dates for each
+	assert(len(usd.rows) == len(bitcoin.rows) == len(gold.rows) == len(set_of_all_three_dates))
+
 	return usd, bitcoin, gold
+
+
+def pop_unique_dates(dataset, all_three_list):
+	dataset_before = len(dataset.rows)
+	index = 0
+	for row in dataset.rows:
+		#print row
+		if row[0] not in all_three_list:
+			dataset.rows.pop(index)
+			#print row[0], 'not in all dates'
+		index += 1
+
+	dataset_after = len(dataset.rows)
+	#print dataset_before - dataset_after, 'dates removed from', dataset.name
 
 
 def read_input_file(file):
@@ -100,6 +151,50 @@ def read_input_file(file):
 	lists.pop()
 
 	return lists
+
+def clean_bitcoin(bitcoin):
+	#print 'clean bitcoin'
+	index = 0
+	for row in bitcoin.rows:
+		#print row
+		if row[1] == '0.0' and row[2] == '0.0' and row[3] == '0.0' and row[4] == '0.0' and row[5] == '0.0' and row[6] == '0.0' and row[7] == '0.0':
+			bitcoin.rows.pop(index)
+			#print 'popped 0'
+		index += 1
+
+	bitcoin.access_by_date = bitcoin.process_lists()
+	bitcoin.date_list = bitcoin.get_list_of_dates()
+	bitcoin.date_set = set(bitcoin.date_list)
+
+	return bitcoin
+
+
+def get_list_of_common_dates(list_of_all_possible_dates, usd, bitcoin, gold):
+	set_of_all_possible_dates = set(list_of_all_possible_dates)
+
+	set_of_all_three_dates = set_of_all_possible_dates.intersection(usd.date_set)
+	set_of_all_three_dates = set_of_all_three_dates.intersection(bitcoin.date_set)
+	set_of_all_three_dates = set_of_all_three_dates.intersection(gold.date_set)
+
+	#print len(set_of_all_three_dates), 'dates in all three'
+	return set_of_all_three_dates
+
+
+def all_dates(start_date, end_date):
+
+	list_of_all_possible_dates = []
+	current_date = start_date
+	delta = datetime.timedelta(days=1)
+
+	while current_date < end_date:
+		current_only_date = current_date.date()
+		date_string = current_only_date.strftime('%Y-%m-%d')
+		list_of_all_possible_dates.append(date_string)
+
+		current_date += delta
+
+	return list_of_all_possible_dates
+
 
 
 class Dataset:
@@ -145,6 +240,9 @@ class Dataset:
 			raise ValueError('Dates not unique within dataset')
 
 		return dates
+
+
+
 
 
 if __name__ == "__main__":
