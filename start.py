@@ -25,7 +25,6 @@ def plot_date_price(dataset, price_row_index):
 	price = []
 
 	for row in dataset.datetime_rows:
-		#print row
 		to_date.append(row[0])
 		price.append(row[price_row_index])
 

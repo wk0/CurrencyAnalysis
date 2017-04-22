@@ -84,7 +84,10 @@ def make_three_datasets(all_possible_dates):
 	bitcoin_data = read_input_file(bitcoin_file_name)
 	bitcoin = Dataset(bitcoin_data, 'bitcoin')
 	bitcoin = clean_bitcoin(bitcoin)
+	bitcoin = clean_bitcoin(bitcoin)
 
+	#for row in bitcoin.rows:
+	#	print row
 
 	gold_data = read_input_file(gold_file_name)
 	gold = Dataset(gold_data, 'gold')
@@ -120,6 +123,9 @@ def make_three_datasets(all_possible_dates):
 
 	# must be the same number of dates for each
 	assert(len(usd.rows) == len(bitcoin.rows) == len(gold.rows) == len(set_of_all_three_dates))
+
+	#for row in bitcoin.datetime_rows:
+	#	print row
 
 	return usd, bitcoin, gold
 
