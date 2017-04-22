@@ -1,6 +1,7 @@
 import quandl
 import csv
 import datetime
+from dateutil.parser import parse
 
 """
 	Imports the data from the quandl API, though it may
@@ -113,6 +114,9 @@ def make_three_datasets(all_possible_dates):
 	bitcoin.refresh()
 	gold.refresh()
 
+	usd.make_datetime_rows()
+	bitcoin.make_datetime_rows()
+	gold.make_datetime_rows()
 
 	# must be the same number of dates for each
 	assert(len(usd.rows) == len(bitcoin.rows) == len(gold.rows) == len(set_of_all_three_dates))
@@ -168,6 +172,7 @@ def clean_bitcoin(bitcoin):
 	for row in bitcoin.rows:
 		#print row
 		if row[1] == '0.0' and row[2] == '0.0' and row[3] == '0.0' and row[4] == '0.0' and row[5] == '0.0' and row[6] == '0.0' and row[7] == '0.0':
+			#print bitcoin.rows[index]
 			bitcoin.rows.pop(index)
 			#print 'popped 0'
 		index += 1
@@ -245,10 +250,12 @@ class Dataset:
 		self.date_list = self.get_list_of_dates()
 		self.date_set = set(self.date_list)
 
+
 	def refresh(self):
 		self.access_by_date = self.process_lists()
 		self.date_list = self.get_list_of_dates()
 		self.date_set = set(self.date_list)
+
 
 	def process_lists(self):
 		by_date = {}
@@ -273,9 +280,32 @@ class Dataset:
 
 		return dates
 
+	def make_datetime_rows(self):
+		datetime_rows = []
 
+		#print self.rows[0]
 
+		index = 0
+		for row in self.rows:
+			datetime_row = []
+			# bypass label
+			if index == 0:
+				index += 1
+				continue
 
+			i = 0
+			for item in row:
+				if i == 0:
+					datetime_row.append(datetime.datetime.strptime(row[0], '%Y-%m-%d'))
+				else:
+					datetime_row.append(row[i])
+				i += 1
+
+			#print datetime.datetime.strptime(row[0], '%Y-%m-%d').date(), row[0]
+			datetime_rows.append(datetime_row)
+			index += 1
+
+		self.datetime_rows = datetime_rows
 
 if __name__ == "__main__":
 	test()
