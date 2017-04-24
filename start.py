@@ -3,7 +3,7 @@ import datetime
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-
+import csv
 
 years = mdates.YearLocator()
 months = mdates.MonthLocator()
@@ -23,6 +23,13 @@ def main():
 	plot_date_price(usd, 1, xlabel="Date", ylabel="Broad Index", title='USD')
 	plot_date_price(bitcoin, 7, xlabel="Date", ylabel="USD", title='Bitcoin')
 	plot_date_price(gold, 1, xlabel="Date", ylabel="USD", title='Gold')
+
+
+
+	#with open("goldcleaned.csv", "wb") as f:
+	#	writer = csv.writer(f)
+	#	writer.writerows(gold.rows)
+
 
 
 def plot_date_price(dataset, price_row_index, xlabel, ylabel, title):
