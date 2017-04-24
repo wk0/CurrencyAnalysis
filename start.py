@@ -2,6 +2,12 @@ from handle_data import Dataset, make_three_datasets, all_dates, get_list_of_com
 import datetime
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+
+years = mdates.YearLocator()
+months = mdates.MonthLocator()
+yearsFmt = mdates.DateFormatter('%Y')
 
 def main():
 
@@ -12,15 +18,14 @@ def main():
 
 	# You can also acess intervals of data using different time ranges
 	#	by just creating a different list of dates using all_dates(start, end)
-
 	usd, bitcoin, gold = make_three_datasets(max_possible_dates)
 
-	plot_date_price(usd, 1)
-	plot_date_price(bitcoin, 7)
-	plot_date_price(gold, 1)
+	plot_date_price(usd, 1, xlabel="Date", ylabel="Broad Index", title='USD')
+	plot_date_price(bitcoin, 7, xlabel="Date", ylabel="USD", title='Bitcoin')
+	plot_date_price(gold, 1, xlabel="Date", ylabel="USD", title='Gold')
 
 
-def plot_date_price(dataset, price_row_index):
+def plot_date_price(dataset, price_row_index, xlabel, ylabel, title):
 	to_date = []
 	price = []
 
@@ -30,7 +35,17 @@ def plot_date_price(dataset, price_row_index):
 
 	dates = matplotlib.dates.date2num(to_date)
 
-	plt.plot(dates, price)
+	fig, ax = plt.subplots()
+	ax.plot(dates, price)
+
+	ax.xaxis.set_major_locator(years)
+	ax.xaxis.set_major_formatter(yearsFmt)
+	ax.xaxis.set_minor_locator(months)
+
+	plt.xlabel(xlabel, fontsize=18)
+	plt.ylabel(ylabel, fontsize=18)
+	plt.title(title, fontsize=24)
+
 	plt.show()
 
 
