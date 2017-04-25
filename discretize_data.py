@@ -26,42 +26,47 @@ def load_data(path):
 
 def percent_change(value_1, value_2):
     if value_1 == 0 or value_2 == 0:
-        return "NaN"
+        return "negative"
 
-    return ((value_1 - value_2)/value_1)*100
+    change = ((value_1 - value_2)/value_1)*100
+
+
+    if change > 0: 
+        return 'positive'
+    else:
+        return 'negative'
 
 
 def generate_class_labels(data, start, end, interval):
-    class_labels = dict()
-    while True:
-        starting_value = data[start][-1]
-        try:
-            ending_value = data[start+interval][-1]
-        except KeyError:
-            break
+    day = timedelta(1)
 
-        class_labels[start] = percent_change(starting_value, ending_value)
 
-        start += interval
+    fields = ['id', 'open', 'high', 'low', 'close', 'volume (btc)', 'volume (currency)', 'class label']
 
-        if start == end:
-            break
+    with open('results-1week.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
+        row_id = 1
 
-    x = []
-    y = []
+        while True:
+            current_date = start
 
-   #with open("results.txt", "w") as f:
-    for key in sorted(class_labels.keys(), reverse=True):
-        x.append(key)
-        value = class_labels[key]
-        if value == 'NaN':
-            y.append(0)
-        else:
-            y.append(value)
-            #f.write("%s, %s \n" %(key, class_labels[key]))
+            starting_value = data[current_date][-1]
 
-    plt.plot(x, y)
-    plt.show()
+            try:
+                ending_value = data[current_date+interval][-1]
+            except KeyError:
+                break
+
+            row = [row_id] + data[current_date][0:-1] + [percent_change(starting_value, ending_value)]
+
+            writer.writerow(row)
+            start += day
+            row_id += 1
+
+            if start >= end:
+                break
+
 
 
 if __name__ == "__main__":
@@ -70,5 +75,6 @@ if __name__ == "__main__":
     data = load_data(file)
     start_date = datetime(year=2011, month=9, day=13)
     end_date = datetime(year=2017, month=3, day=24)
-    interval = timedelta(30)
+    interval = timedelta(7)
+
     generate_class_labels(data, start_date, end_date, interval)

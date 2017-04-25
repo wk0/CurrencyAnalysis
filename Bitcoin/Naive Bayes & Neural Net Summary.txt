@@ -1,0 +1,63 @@
+Looking 1 day forward 
+Instances:    2019
+
+		Naive Bayes 
+====================================================================
+
+Correctly Classified Instances        1074               53.1947 %
+Incorrectly Classified Instances       945               46.8053 %
+
+Precision 	0.530
+Recall 		0.532
+
+   a   b   <-- classified as
+ 391 493 |   a = positive
+ 452 683 |   b = negative
+
+
+		Multilayer Perceptron
+====================================================================
+
+Correctly Classified Instances        1213               60.0792 %
+Incorrectly Classified Instances       806               39.9208 %
+
+Precision	0.594
+Recall 		0.601
+
+  a   b   <-- classified as
+ 328 556 |   a = positive
+ 250 885 |   b = negative
+
+
+
+
+
+ Looking 1 week forward 
+ Instances:    2013
+
+		Naive Bayes 
+====================================================================
+
+Correctly Classified Instances        1185                58.8674 %
+Incorrectly Classified Instances       828                41.1326 %
+
+Precision 	0.589
+Recall		0.575
+
+   a   b   <-- classified as
+ 309 525 |   a = positive
+ 303 876 |   b = negative
+
+
+		Multilayer Perceptron
+====================================================================
+
+Correctly Classified Instances        1171               58.1719 %
+Incorrectly Classified Instances       842               41.8281 %
+
+Precision 	0.562
+Recall		0.582
+
+   a   b   <-- classified as
+ 243 591 |   a = positive
+ 251 928 |   b = negative
