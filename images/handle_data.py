@@ -46,7 +46,7 @@ def test():
 	print 'Bitcoin Sample'
 	print bitcoin_data[0]
 	print bitcoin_data[1]
-	print ''
+	print`` ''
 
 	gold_data = read_input_file(gold_file_name)
 	print 'Gold Sample'
