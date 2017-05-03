@@ -1,6 +1,6 @@
 import datetime
 
-from images.handle_data import make_three_datasets
+from handle_data import make_three_datasets
 
 
 def main():

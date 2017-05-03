@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
-from images.handle_data import make_three_datasets, all_dates
+from handle_data import make_three_datasets, all_dates
 
 years = mdates.YearLocator()
 months = mdates.MonthLocator()
